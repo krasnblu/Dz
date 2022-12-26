@@ -125,13 +125,18 @@ private:
 		showTree(currItem->getLeft(), indent + "  ");
 		showTree(currItem->getRight(), indent + "  ");
 	}
-	void substituteChilds(T itm) {
-		if (findItem(itm) != nullptr) return;
-
-		BinaryTreeItem<T>* leftChild = itm->getLeft();
-		BinaryTreeItem<T>* rightChild = itm->getRight();
-
-			itm->setLeft(rightChild);
-			itm->setRight(leftChild);
-}
+	void del(BinaryTreeItem<T>* currItem) { 
+        if (currItem->getLeft() == nullptr || currItem->getRight() == nullptr) { // если есть один потомок, или их вообще нет
+            BinaryTreeItem<T>* sav = currItem;
+            if (currItem->getLeft() != nullptr) // перетаскиваем потомка на место вершины, а саму вершину удаляем
+                 currItem = currItem->getLeft();
+            else
+                  currItem = currItem->getRight();
+             delete sav;
+        } else { // дальше идет процедура удаления, если у вершины есть оба потомка
+             BinaryTreeItem<T>** p2 = &currItem->getRight();
+            while ((*p2)->getLeft()) p2 = &((*p2)->getLeft());
+            currItem->item = (*p2)->item;
+            del(*p2);
+     }
 };
